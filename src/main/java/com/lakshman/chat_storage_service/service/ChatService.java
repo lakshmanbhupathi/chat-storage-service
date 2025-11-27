@@ -2,6 +2,7 @@ package com.lakshman.chat_storage_service.service;
 
 import com.lakshman.chat_storage_service.dto.CreateSessionRequest;
 import com.lakshman.chat_storage_service.dto.SessionResponse;
+import com.lakshman.chat_storage_service.dto.UpdateSessionRequest;
 
 import java.util.List;
 import java.util.UUID;
@@ -12,4 +13,8 @@ public interface ChatService {
     SessionResponse getSession(UUID sessionId);
 
     List<SessionResponse> getUserSessions(String userId);
+
+    SessionResponse updateSession(UUID sessionId, UpdateSessionRequest request);
+
+    void deleteSession(UUID sessionId);
 }

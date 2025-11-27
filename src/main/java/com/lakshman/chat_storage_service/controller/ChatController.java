@@ -2,6 +2,7 @@ package com.lakshman.chat_storage_service.controller;
 
 import com.lakshman.chat_storage_service.dto.CreateSessionRequest;
 import com.lakshman.chat_storage_service.dto.SessionResponse;
+import com.lakshman.chat_storage_service.dto.UpdateSessionRequest;
 import com.lakshman.chat_storage_service.service.ChatService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -11,7 +12,9 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -64,6 +67,32 @@ public class ChatController {
             @Parameter(description = "ID of the user to fetch sessions for", required = true, example = "user123") @RequestParam String userId) {
         log.info("Received request to get sessions for user: {}", userId);
         return chatService.getUserSessions(userId);
+    }
+
+    @PatchMapping("/{id}")
+    @Operation(summary = "Update a session", description = "Updates the title or favorite status of a chat session.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Session updated successfully"),
+            @ApiResponse(responseCode = "404", description = "Session not found")
+    })
+    public SessionResponse updateSession(
+            @Parameter(description = "UUID of the session to update", required = true) @PathVariable UUID id,
+            @RequestBody UpdateSessionRequest request) {
+        log.info("Received request to update session: {}", id);
+        return chatService.updateSession(id, request);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Delete a session", description = "Deletes a chat session and all its associated messages.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Session deleted successfully"),
+            @ApiResponse(responseCode = "404", description = "Session not found")
+    })
+    public void deleteSession(
+            @Parameter(description = "UUID of the session to delete", required = true) @PathVariable UUID id) {
+        log.info("Received request to delete session: {}", id);
+        chatService.deleteSession(id);
     }
 
 }
