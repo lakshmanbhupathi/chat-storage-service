@@ -10,7 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -44,6 +46,14 @@ public class ChatServiceImpl implements ChatService {
                     return new ResourceNotFoundException("Session not found with id: " + sessionId);
                 });
         return SessionResponse.fromEntity(session);
+    }
+
+    @Override
+    public List<SessionResponse> getUserSessions(String userId) {
+        log.debug("Fetching sessions for user: {}", userId);
+        return sessionRepository.findByUserId(userId).stream()
+                .map(SessionResponse::fromEntity)
+                .collect(Collectors.toList());
     }
 
 
