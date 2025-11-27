@@ -55,10 +55,10 @@ A Spring Boot microservice for storing chat histories for a RAG-based chatbot sy
 The application is configured via `application.properties` and environment variables.
 
 
- `DB_USERNAME`  Database username  `postgres` 
- `DB_PASSWORD`  Database password `password` 
- `DB_NAME`  Database name  `chat_history_db` 
- `APP_API_KEY`  API Key for authentication  `my-secret-api-key` 
+ `DB_USERNAME`  Database username  `postgres` <br>
+ `DB_PASSWORD`  Database password `password` <br>
+ `DB_NAME`  Database name  `chat_history_db` <br>
+ `APP_API_KEY`  API Key for authentication  `my-secret-api-key` <br> 
 
 ## API Documentation
 
