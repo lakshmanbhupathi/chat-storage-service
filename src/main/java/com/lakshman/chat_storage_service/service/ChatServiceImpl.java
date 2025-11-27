@@ -12,6 +12,8 @@ import com.lakshman.chat_storage_service.repository.ChatMessageRepository;
 import com.lakshman.chat_storage_service.repository.ChatSessionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -99,6 +101,7 @@ public class ChatServiceImpl implements ChatService {
                 });
     }
 
+    @Override
     public MessageResponse addMessage(UUID sessionId, CreateMessageRequest request) {
         log.info("Adding message to session: {}", sessionId);
         ChatSession session = findSessionEntity(sessionId);
@@ -116,6 +119,17 @@ public class ChatServiceImpl implements ChatService {
         ChatMessage savedMessage = messageRepository.save(message);
         log.debug("Added message with ID: {} to session: {}", savedMessage.getId(), sessionId);
         return MessageResponse.fromEntity(savedMessage);
+    }
+
+    @Override
+    public Page<MessageResponse> getSessionMessages(UUID sessionId, Pageable pageable) {
+        log.debug("Fetching messages for session: {}", sessionId);
+        if (!sessionRepository.existsById(sessionId)) {
+            log.error("Session not found with ID:: {}", sessionId);
+            throw new ResourceNotFoundException("Session not found with id: " + sessionId);
+        }
+        return messageRepository.findBySessionIdOrderByCreatedAtAsc(sessionId, pageable)
+                .map(MessageResponse::fromEntity);
     }
 
 }
