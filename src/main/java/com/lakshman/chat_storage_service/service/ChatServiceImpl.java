@@ -1,8 +1,11 @@
 package com.lakshman.chat_storage_service.service;
 
+import com.lakshman.chat_storage_service.dto.CreateMessageRequest;
 import com.lakshman.chat_storage_service.dto.CreateSessionRequest;
+import com.lakshman.chat_storage_service.dto.MessageResponse;
 import com.lakshman.chat_storage_service.dto.SessionResponse;
 import com.lakshman.chat_storage_service.dto.UpdateSessionRequest;
+import com.lakshman.chat_storage_service.entity.ChatMessage;
 import com.lakshman.chat_storage_service.entity.ChatSession;
 import com.lakshman.chat_storage_service.exception.ResourceNotFoundException;
 import com.lakshman.chat_storage_service.repository.ChatMessageRepository;
@@ -96,5 +99,23 @@ public class ChatServiceImpl implements ChatService {
                 });
     }
 
+    public MessageResponse addMessage(UUID sessionId, CreateMessageRequest request) {
+        log.info("Adding message to session: {}", sessionId);
+        ChatSession session = findSessionEntity(sessionId);
+
+        ChatMessage message = new ChatMessage();
+        message.setSession(session);
+        try {
+            message.setSender(ChatMessage.Sender.valueOf(request.getSender().name().toUpperCase()));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid sender type: " + request.getSender());
+        }
+        message.setContent(request.getContent());
+        message.setContext(request.getContext());
+
+        ChatMessage savedMessage = messageRepository.save(message);
+        log.debug("Added message with ID: {} to session: {}", savedMessage.getId(), sessionId);
+        return MessageResponse.fromEntity(savedMessage);
+    }
 
 }

@@ -1,6 +1,8 @@
 package com.lakshman.chat_storage_service.controller;
 
+import com.lakshman.chat_storage_service.dto.CreateMessageRequest;
 import com.lakshman.chat_storage_service.dto.CreateSessionRequest;
+import com.lakshman.chat_storage_service.dto.MessageResponse;
 import com.lakshman.chat_storage_service.dto.SessionResponse;
 import com.lakshman.chat_storage_service.dto.UpdateSessionRequest;
 import com.lakshman.chat_storage_service.service.ChatService;
@@ -93,6 +95,21 @@ public class ChatController {
             @Parameter(description = "UUID of the session to delete", required = true) @PathVariable UUID id) {
         log.info("Received request to delete session: {}", id);
         chatService.deleteSession(id);
+    }
+
+    @PostMapping("/{id}/messages")
+    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Add a message to a session", description = "Adds a new message to an existing chat session.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Message added successfully"),
+            @ApiResponse(responseCode = "404", description = "Session not found"),
+            @ApiResponse(responseCode = "400", description = "Invalid input")
+    })
+    public MessageResponse addMessage(
+            @Parameter(description = "UUID of the session to add the message to", required = true) @PathVariable UUID id,
+            @Valid @RequestBody CreateMessageRequest request) {
+        log.info("Received request to add message to session: {}", id);
+        return chatService.addMessage(id, request);
     }
 
 }
