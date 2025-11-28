@@ -44,7 +44,7 @@ class ChatServiceTest {
     private ChatMessageRepository messageRepository;
 
     @InjectMocks
-    private ChatService chatService;
+    private ChatServiceImpl chatService;
 
     @BeforeEach
     void setUp() {
