@@ -23,7 +23,7 @@ public class RateLimitingFilter implements Filter {
 
     public RateLimitingFilter() {
         // Allow 10 requests per minute
-        Bandwidth limit = Bandwidth.classic(10, Refill.greedy(10, Duration.ofMinutes(1)));
+        Bandwidth limit = Bandwidth.classic(100, Refill.greedy(10, Duration.ofMinutes(1)));
         this.bucket = Bucket.builder()
                 .addLimit(limit)
                 .build();
